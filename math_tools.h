@@ -15,5 +15,5 @@ long double arctan(long double arg);
 long double arccot(long double arg);
 
 // Other functions
-long double power(long double n, long double power);
+long double power(long double n, long double p);
 long double sqrt(long double n);
