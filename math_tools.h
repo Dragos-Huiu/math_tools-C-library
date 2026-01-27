@@ -17,3 +17,4 @@ long double arccot(long double arg);
 // Other functions
 long double power(long double n, long double p);
 long double sqrt(long double n);
+long double root(long double base, int value);

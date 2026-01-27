@@ -134,6 +134,64 @@ long double arccot(long double arg) {
 	return PI/2 - arctan(arg);
 }
 
+long int cmmdc(long int a, long int b) {
+	if(b == 0) {
+		return a;
+	}
+	return cmmdc(b, a % b);
+}
+
+long double fast_exp(long double base, long int power) {
+	long double p = 1;
+	while(power) {
+		if(power % 2 == 1) {
+			p *= base;
+		}
+		base *= base;
+		power /= 2;
+	}
+	return p;
+}
+
+long double root(long double base, int value) {
+	/*
+		Use Newton-Raphson method
+		xk = xk-1 - f(xk-1) / f'(xk-1), with k from 0 to infinity
+		The function: f(x) = x^value - n
+		The derivative: f'(x) = value*x^(value - 1)
+		from x = root_value(n), simplified x^value = n => x^value - n = 0
+	*/
+	long double current_x = base / 2.0; // Start with the prediction set to n / 2.0
+	while (1) {
+		// Simplify the ecuation
+		long double new_x = current_x * (1 - 1.0 / value) + base / (value * fast_exp(current_x, value - 1));
+		if (new_x - current_x > -EPS && new_x - current_x < EPS) {
+			/*
+			The loop stops by returning the new x when the absolute value
+			of the difference between new x and current x is less than epsilon
+			*/
+			return value > 0 ? new_x: 1 / new_x;
+		}
+		current_x = new_x; // Continue the process for new value approximation
+	}
+}
+
+long double power(long double base, long double exp) {
+	int denumerator = 1;
+	while((int)exp != exp) {
+		exp *= 10;
+		denumerator *= 10;
+	}
+
+	int numerator = exp;
+	int divisor = cmmdc(numerator, denumerator);
+	numerator /= divisor;
+	denumerator /= divisor;
+
+	long double result = root(fast_exp(base, numerator), denumerator);
+	return result;
+}
+
 long double sqrt(long double n) {
 	/* 
 		Use Newton-Raphson method
